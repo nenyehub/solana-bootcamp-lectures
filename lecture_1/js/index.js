@@ -16,12 +16,12 @@ const main = async () => {
   // args[1] (Optional): Counter buffer account
   const programId = new PublicKey(args[0]);
 
-  console.log(programId.toBase58());
-  const connection = new Connection("https://api.devnet.solana.com/");
-  const feePayer = new Keypair();
+  console.log(programId.toBase58());  // Print programID to console
+  const connection = new Connection("https://api.devnet.solana.com/");  // Connect to devnet
+  const feePayer = new Keypair();  // Create new keypair to act as fee payer
 
   console.log("Requesting Airdrop of 1 SOL...");
-  await connection.requestAirdrop(feePayer.publicKey, 2e9);
+  await connection.requestAirdrop(feePayer.publicKey, 2e9); // Request 2 SOL airdrop to fee payer for account creation
   console.log("Airdrop received");
 
   const counter = new Keypair();
@@ -44,10 +44,10 @@ const main = async () => {
       programId: programId,
     });
     signers.push(counter);
-    tx.add(createIx);
+    tx.add(createIx);  // Add account creation instruction
   }
 
-  const idx = Buffer.from(new Uint8Array([0]));
+  const idx = Buffer.from(new Uint8Array([0]));  // Instruction data. Enum zero is 'Increment'
 
   let incrIx = new TransactionInstruction({
     keys: [
@@ -55,11 +55,11 @@ const main = async () => {
         pubkey: counterKey,
         isSigner: false,
         isWritable: true,
-      }
+      },
     ],
     programId: programId,
-    data: idx,
-  });
+    data: idx,  // Instruction data, for this case
+  })
   /*
     TransactionInstruction({
       keys: Array<AccountMeta>,
@@ -67,7 +67,9 @@ const main = async () => {
       data: Buffer,
     });
   */
-  tx.add(incrIx);
+  tx.add(incrIx); // Add increment instruction
+
+
 
   let txid = await sendAndConfirmTransaction(connection, tx, signers, {
     skipPreflight: true,

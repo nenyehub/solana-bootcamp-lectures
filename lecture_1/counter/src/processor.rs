@@ -24,12 +24,13 @@ impl Processor {
         match instruction {
             CounterInstruction::Increment => {
                 msg!("Instruction: Increment");
-                let accounts_iter = &mut accounts.iter();
-                let counter_ai = next_account_info(accounts_iter)?;
-                let mut counter = Counter::try_from_slice(&counter_ai.data.borrow())?;
-                counter.count += 1;
-                msg!("Updating count {}", counter.count);
-                counter.serialize(&mut *counter_ai.data.borrow_mut())?;
+                let accounts_iter = &mut accounts.iter();  // Create a pointer to an iterator over accounts
+                let counter_ai = next_account_info(accounts_iter)?;  // next_account_info is used to go through an iterator of accounts
+                let mut counter = Counter::try_from_slice(&counter_ai.data.borrow())?;  // Function used to deserialize raw account data into an object
+                counter.count += 1; // In the localize copy of the buffer, count variable has increased
+                counter.serialize(&mut *counter_ai.data.borrow_mut())?;  // Serialize the data back to the original account encoding
+
+                // Proccess: Copy data into an object, modify the object, and write the data back to the account 
             }
         }
         Ok(())
